@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Timetable & Alarm</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>School Timetable & Alarm System</h1>
+    <p>Set your daily subjects and get an automatic alarm reminder.</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="complaint.html">Complaint Box</a>
+    <a href="timetable.html">Timetable</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="planner.html">Study Planner</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<section class="container">
+
+    <h2>Add Subject</h2>
+    <form id="timetableForm">
+        <label>Subject:</label>
+        <input type="text" id="subject" placeholder="e.g. Mathematics" required>
+
+        <label>Time:</label>
+        <input type="time" id="time" required>
+
+        <button type="submit">Add to Timetable</button>
+    </form>
+
+    <h2>Today's Timetable</h2>
+    <table id="tableList">
+        <tr>
+            <th>Subject</th>
+            <th>Time</th>
+        </tr>
+    </table>
+
+</section>
+
+<audio id="alarmSound">
+    <source src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const form = document.getElementById("timetableForm");
+    const tableList = document.getElementById("tableList");
+    const alarmSound = document.getElementById("alarmSound");
+
+    function loadTimetable() {
+        const timetable = JSON.parse(localStorage.getItem("timetable")) || [];
+        tableList.innerHTML = `
+            <tr>
+                <th>Subject</th>
+                <th>Time</th>
+            </tr>
+        `;
+
+        timetable.forEach(item => {
+            tableList.innerHTML += `
+                <tr>
+                    <td>${item.subject}</td>
+                    <td>${item.time}</td>
+                </tr>
+            `;
+        });
+    }
+
+    form.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        const subject = document.getElementById("subject").value;
+        const time = document.getElementById("time").value;
+
+        const newItem = { subject, time };
+
+        const timetable = JSON.parse(localStorage.getItem("timetable")) || [];
+        timetable.push(newItem);
+        localStorage.setItem("timetable", JSON.stringify(timetable));
+
+        form.reset();
+        loadTimetable();
+    });
+
+    function checkAlarm() {
+        const timetable = JSON.parse(localStorage.getItem("timetable")) || [];
+        const now = new Date();
+
+        let currentTime = now.toTimeString().slice(0, 5);
+
+        timetable.forEach(item => {
+            if (item.time === currentTime) {
+                alarmSound.play();
+                alert(`It's time for: ${item.subject}`);
+            }
+        });
+    }
+
+    loadTimetable();
+    setInterval(checkAlarm, 1000);
+</script>
+
+</body>
+</html>

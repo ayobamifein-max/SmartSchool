@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Attendance Tracker</h1>
+    <p>Mark daily attendance for each student.</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="complaint.html">Complaint Box</a>
+    <a href="timetable.html">Timetable</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="planner.html">Study Planner</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<section class="container">
+
+    <h2>Mark Attendance</h2>
+
+    <form id="attendanceForm">
+        <label>Student Name:</label>
+        <input type="text" id="student" placeholder="e.g. John Daniel" required>
+
+        <label>Status:</label>
+        <select id="status">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Late">Late</option>
+        </select>
+
+        <button type="submit">Save Attendance</button>
+    </form>
+
+    <h2>Attendance Records</h2>
+
+    <table id="attendanceTable">
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+    </table>
+
+</section>
+
+<script>
+    const attendanceForm = document.getElementById("attendanceForm");
+    const attendanceTable = document.getElementById("attendanceTable");
+
+    function loadAttendance() {
+        const records = JSON.parse(localStorage.getItem("attendance")) || [];
+        
+        attendanceTable.innerHTML = `
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        `;
+
+        records.forEach(record => {
+            attendanceTable.innerHTML += `
+                <tr>
+                    <td>${record.name}</td>
+                    <td>${record.status}</td>
+                    <td>${record.date}</td>
+                </tr>
+            `;
+        });
+    }
+
+    attendanceForm.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        const name = document.getElementById("student").value;
+        const status = document.getElementById("status").value;
+
+        const today = new Date();
+        const date = today.toLocaleDateString();
+
+        const newRecord = {
+            name,
+            status,
+            date
+        };
+
+        const records = JSON.parse(localStorage.getItem("attendance")) || [];
+        records.push(newRecord);
+        localStorage.setItem("attendance", JSON.stringify(records));
+
+        attendanceForm.reset();
+        loadAttendance();
+    });
+
+    loadAttendance();
+</script>
+
+</body>
+</html>
+
