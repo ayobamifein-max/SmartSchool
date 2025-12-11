@@ -1,0 +1,1 @@
+SmartSchool is made to use technology to simplify school processes, improve learning, and empower students to solve real problem also to provide a simple, interactive, and digital school portal that helps students and teachers stay organized and connected.</p>
