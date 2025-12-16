@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complaint & Suggestion Box</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Complaint & Suggestion Box</h1>
+    <p>Your voice matters. Submit any complaint or suggestion anonymously.</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="complaint.html">Complaint Box</a>
+    <a href="timetable.html">Timetable</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="planner.html">Study Planner</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<section class="container">
+
+    <form id="complaintForm">
+        <label>Your Name (optional)</label>
+        <input type="text" id="name" placeholder="Enter name (optional)">
+
+        <label>Type</label>
+        <select id="type">
+            <option value="Complaint">Complaint</option>
+            <option value="Suggestion">Suggestion</option>
+        </select>
+
+        <label>Your Message</label>
+        <textarea id="message" placeholder="Write your complaint or suggestion here..." required></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Submitted Messages</h2>
+    <div id="displayArea"></div>
+
+</section>
+
+<script>
+    const form = document.getElementById("complaintForm");
+    const displayArea = document.getElementById("displayArea");
+
+    function loadMessages() {
+        const messages = JSON.parse(localStorage.getItem("messages")) || [];
+        displayArea.innerHTML = "";
+
+        messages.forEach(msg => {
+            displayArea.innerHTML += `
+                <div class="message-box">
+                    <h3>${msg.type}</h3>
+                    <p>${msg.text}</p>
+                    <small>— ${msg.name || "Anonymous"}</small>
+                </div>
+            `;
+        });
+    }
+
+    form.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const type = document.getElementById("type").value;
+        const message = document.getElementById("message").value;
+
+        const newMessage = {
+            name: name,
+            type: type,
+            text: message
+        };
+
+        const messages = JSON.parse(localStorage.getItem("messages")) || [];
+        messages.push(newMessage);
+
+        localStorage.setItem("messages", JSON.stringify(messages));
+        loadMessages();
+
+        form.reset();
+    });
+
+    loadMessages();
+</script>
+
+</body>
+</html>
